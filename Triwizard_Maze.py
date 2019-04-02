@@ -1,16 +1,16 @@
-#Time taken: 1005
+#Time taken: 1163
 # Compass directions: 1-N, 2-E, 3-S, 4-W
 import random
 
 direction = 4
-HarryX = 12
-HarryY = 0
+# HarryX = 12
+# HarryY = 0
 
 local_objects = ['Hedge']
 
 rescuer = 0
-Encounter = True
-encounter_name = "Sphinx"
+Encounter = False
+encounter_name = "None"
 
 Krum_status = "active"
 Cedric_status = "friendly"
@@ -19,25 +19,27 @@ Cedric_status = "friendly"
 CK_counter = -2 # -2 = first overheard. -1 = continuous overheard. 0 = arrived. 1 = first seen. 2 = continuous seen
 CK_ignored_counter = 0
 Sph_counter = 0 # 0 = first seen. 1 = first spoken to. 2 = riddle heard
+Spider_counter = 0
 Fleur_attacked = False
 finished = False
 
 #stuff: 0,0 = cup. 1,-10 = sphinx.  2, -12 = skrewt.  2,-4 = post-skrewt Cedric.  3,-5 = Boggart.  4,-3 = skrewt.  4,-8 = flobberworms.  5, -12 = torch.  7,-5 = egg.  8,-9 = trigger C&K encounter.  9,-1 = skrewt. 10,-6 = mist. 12,-12 = Peeves
 
 N_paths = [
-    [True,True,True,True,True,False,True,True,False,False,False,False,False,False],
-    [True,True,True,True,True,True,True,True,False,False,False,False,False,False],
-    [True,False,True,True,True,False,False,True,False,False,True,False,True,False],
-    [True,True,False,True,False,True,False,True,False,False,True,False,True,False],
-    [True,True,True,True,False,True,True,False,True,False,True,True,True,False],
-    [True,True,True,False,False,True,True,True,True,True,True,True,True,False],
-    [True,True,True,True,True,True,False,True,False,False,True,True,True,False],
-    [True,True,False,False,True,True,False,False,False,True,True,True,True,False],
-    [True,True,False,False,False,True,False,False,True,True,True,False,False,False],
-    [True,True,True,False,False,True,False,False,False,False,False,False,False,False],
-    [True,False,False,False,False,False,False,False,False,True,False,True,True,False],
-    [True,False,False,False,False,False,True,False,False,False,True,True,True,False],
-    [False,True,False,True,False,True,True,True,False,False,False,True,True,False]
+    [True,True,True,True,True,False,True,True,False,False,False,False,False],
+    [True,True,True,True,True,True,True,True,False,False,False,False,False],
+    [True,False,True,True,True,False,False,True,False,False,True,False,True],
+    [True,True,False,True,False,True,False,True,False,False,True,False,True],
+    [True,True,True,True,False,True,True,False,True,False,True,True,True],
+    [True,True,True,False,False,True,True,True,True,True,True,True,True],
+    [True,True,True,True,True,True,False,True,False,False,True,True,True],
+    [True,True,False,False,True,True,False,False,False,True,True,True,True],
+    [True,True,False,False,False,True,False,False,True,True,True,False,False],
+    [True,True,True,False,False,True,False,False,False,False,False,False,False],
+    [True,False,False,False,False,False,False,False,False,True,False,True,True],
+    [True,False,False,False,False,False,True,False,False,False,True,True,True],
+    [False,True,False,True,False,True,True,True,False,False,False,True,True],
+    [False,False,False,False,False,False,False,False,False,False,False,False,False]
 ]
 
 W_paths = [
@@ -54,6 +56,7 @@ W_paths = [
     [False,True,True,True,True,True,True,True,True,False,False,False,False,False],
     [False,False,True,True,True,True,False,False,True,True,True,True,False,False],
     [False,True,False,True,True,False,True,True,True,False,True,True,True,False]
+
 ]
 
 
@@ -109,8 +112,11 @@ class character():
         self.name = name
         self.x = 12
         self.y = 0
-        self.compass = 4
+        self.compass = 1
         self.Cedric_relations = 0
+        self.health = 3
+        self.status = "normal"
+
     def move(self, direction):
         #Rotate to face correct direction
         current_direction = self.compass
@@ -141,24 +147,26 @@ class character():
     def activate_Encounter(self):
         if self.x == 1 and self. y == -10:
             return "Sphinx"
-        elif (self.x == 2 and self.y == -12) or (self.x == 4 and self.y == -3) or(self.x == 9 and self.y == -1):
-            return "Skrewt"
-        elif self.x == 2 and self.y == -4:
-            return "Cedric and Skrewt"
-        elif self.x == 3 and self.y == -5:
-            return "Boggart"
-        elif self.x == 4 and self.y == -8:
-            return "Flobberworms"
-        elif self.x == 5 and self.y == -12:
-            return "Hinkypunk"
-        elif self.x == 7 and self.y == -5:
-            return "Dragon Egg"
+        # elif (self.x == 2 and self.y == -12) or (self.x == 4 and self.y == -3) or(self.x == 9 and self.y == -1):
+        #     return "Skrewt"
+        # elif self.x == 2 and self.y == -4:
+        #     return "Cedric and Skrewt"
+        # elif self.x == 3 and self.y == -5:
+        #     return "Boggart"
+        # elif self.x == 4 and self.y == -8:
+        #     return "Flobberworms"
+        # elif self.x == 5 and self.y == -12:
+        #     return "Hinkypunk"
+        # elif self.x == 7 and self.y == -5:
+        #     return "Dragon Egg"
         elif self.x == 8 and self.y == -9 and CK_counter == -2:
             return "Cedric and Krum"
-        elif self.x == 10 and self.y == -6:
-            return "Mist"
-        elif self.x == 12 and self.y == -12:
-            return "Peeves"
+        # elif self.x == 10 and self.y == -6:
+        #     return "Mist"
+        # elif self.x == 12 and self.y == -12:
+        #     return "Peeves"
+        elif self.x == 0 and self.y == -7:
+            return "Spider"
         else: return "None"
 
 
@@ -236,24 +244,32 @@ def Endings(title):
             pass
 
     elif title.startswith("Killed"):
-        if title == "Killed by Sphinx":
-            print("\tYou are quickly torn to shreds by her fierce claws. Sphinxes have little tolerance for stupidity.")
-        print("\tOvercome by your wounds, you die. Cedric comes upon your body and casts red sparks.")
-        if Harry.Cedric_relations>0:
-            Epilogue = "The Chosen One"
-            print(" He remains at your side until McGonagall comes. At the death of a student, the tournament is immediately called off.")
-            if Fleur_attacked == True:
-                print(" Because Fleur was already rescued and Krum was disqualified by using Dark Magic, Cedric wins by default.")
-            else:
-                print(" Because Cedric was in the lead before this final task, he is declared the winner of the Triwizard Tournament.")
-        else:
-            print(" He then continues deeper into the maze. He never returns.", end = "")
-            if Harry.Cedric_relations<0:
-                print(" Rumor has it has joined Voldemort’s followers.")
-                Epilogue = "The Noseless One"
-            else:
+        if title == "Killed by Spider":
+            print(" You were killed by a spider")
+            if Harry.Cedric_relations >= 0:
                 Epilogue = "The Chosen One"
-                print(" His body is found several days later in a graveyard in Little Hangleton, with a gash in the crook of his elbow.")
+            else:
+                Epilogue = "The Noseless One"
+        else:
+            if title == "Killed by Sphinx":
+                print("\tYou are quickly torn to shreds by her fierce claws. Sphinxes have little tolerance for stupidity.")
+            print("\tOvercome by your wounds, you die. Cedric comes upon your body and casts red sparks.")
+
+            if Harry.Cedric_relations>0:
+                Epilogue = "The Chosen One"
+                print(" He remains at your side until McGonagall comes. At the death of a student, the tournament is immediately called off.")
+                if Fleur_attacked == True:
+                    print(" Because Fleur was already rescued and Krum was disqualified by using Dark Magic, Cedric wins by default.")
+                else:
+                    print(" Because Cedric was in the lead before this final task, he is declared the winner of the Triwizard Tournament.")
+            else:
+                print(" He then continues deeper into the maze. He never returns.", end = "")
+                if Harry.Cedric_relations<0:
+                    print(" Rumor has it has joined Voldemort’s followers.")
+                    Epilogue = "The Noseless One"
+                else:
+                    Epilogue = "The Chosen One"
+                    print(" His body is found several days later in a graveyard in Little Hangleton, with a gash in the crook of his elbow.")
 
     elif title.startswith("Take the Cup"):
         if title.startswith("Take the Cup Alone"):
@@ -325,11 +341,26 @@ while finished == False:
                 local_objects = ['Cedric'] + ['Krum'] + local_objects
                 CK_counter +=1
 
-        if encounter_name == "Sphinx":
+        elif encounter_name == "Sphinx":
             if Sph_counter == 0:
                 print(' Ahead of you is a sphinx. It has the body of an over-large lion: great clawed paws and a long yellowish tail ending in a brown tuft, but it has the head of a woman. She turns her long, almond-shaped eyes upon you. However, she does not seem about to attack, but instead paces from side to side of the path, blocking your progress. Then she speaks in a deep, hoarse voice.\n "You are very near your goal. The quickest way is past me."')
                 if 'Sphinx' not in local_objects:
                     local_objects = ['Sphinx'] + local_objects
+
+        elif encounter_name == "Spider":
+            if Spider_counter == 0:
+                print(' The Triwizard Cup is gleaming on a plinth a hundred yards away. Suddenly a dark figure hurtles out onto the path in front of you. It is Cedric, running for the cup.')
+                local_objects = ['Cedric'] + local_objects
+                Spider_counter +=1
+            elif Spider_counter ==1 and Harry.y == -6:
+                print(' You charge forward, but Cedric is going to get there first. Cedric is sprinting as fast as he can toward the cup, and you have no chance of catching up; Cedric is much taller, with much longer legs.\n Then you see something immense over a hedge to your left, moving quickly along a path that intersects with your own; it is moving so fast Cedric is about to run into it, and Cedric, his eyes on the cup, has not seen it –')
+                local_objects = ['Spider'] + local_objects
+                Spider_counter +=1
+            elif Spider_counter == 3:
+                print(" Cedric looks around just in time to hurl himself past the thing and avoid colliding with it, but in his haste he trips. Cedric’s wand flies out of his hand as a gigantic spider steps into the path and begins to bear down on him.")
+            if Harry.status == "under_Spider":
+                Spider_counter = 5
+
     else: local_objects = ['Hedge']
 
 
@@ -353,6 +384,7 @@ while finished == False:
         spell = input(" Which spell would you like to cast? \n 1. Lumos \n 2. Point Me \n 3. Red Sparks \n 4. Expelliarmus \n 5. Stupefy \n 6. Impedimenta \n 7. Reducto \n 8. Expecto Patronum \n 9. Riddikulus\n ")
         spell = spell.lower()
         pass_through = True
+        general_attack = False
         if spell == "1" or spell == "lumos":
             pass
         elif spell == "2" or spell == "point me":
@@ -394,10 +426,22 @@ while finished == False:
                                 pass_through = False
                     elif encounter_name == "Sphinx":
                         if target == "sphinx":
-                            print("Your spell bounces off her thick skin, with no effect. After all, sphinxes don't carry wands. Actually, there is one small side effect. She pounces on you.", end = "")
-                            finished = (Endings("Killed by Sphinx"))
+                            general_attack = True
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            if Spider_counter == 4:
+                                print(' You raise your wand as the spider opens its pincers once more and shout, “Expelliarmus!”\n It works – the Disarming Spell makes the spider drop you, but that means you fall twelve feet onto your already injured leg, which crumples beneath you. Unable to run, you gaze up at the spider’s underbelly.')
+                                Harry.status = 'under_Spider'
+                            elif Spider_counter == 5:
+                                print(" Sadly, the disarming spell only works if your target is holding something.")
+                            else:
+                                general_attack == True
 
-                if Encounter == False or pass_through == True:
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(4)
                     elif target == "hedge":
@@ -418,9 +462,17 @@ while finished == False:
 
                     elif encounter_name == "Sphinx":
                         if target == "sphinx":
-                            print(" Your spell bounces off her thick skin, with no effect. Actually, there is one small side effect. She pounces on you.", end = "")
-                            finished = Endings("Killed by Sphinx")
-                if Encounter == False or pass_through == True:
+                            general_attack = True
+
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            general_attack == True
+
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(5)
                     elif target == "hedge":
@@ -441,10 +493,17 @@ while finished == False:
                                 print(' You yell, “Impedimenta!” The spell hits Krum in the back, stopping him in his tracks. He spins and turns toward you. He raises his wand threateningly towards you, then a confused look comes over his face. He turns his wand back towards Cedric and yells, “Crucio!”')
                     elif encounter_name == "Sphinx":
                         if target == "sphinx":
-                            print(" Your spell bounces off her thick skin, with no effect. Actually, there is one small side effect. She pounces on you.", end = "")
-                            finished = Endings("Killed by Sphinx")
+                            general_attack = True
 
-                elif Encounter == False or pass_through == True:
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            general_attack == True
+
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(6)
                     elif target == "hedge":
@@ -470,9 +529,17 @@ while finished == False:
                             Krum_status = 'vanquished'
                     elif encounter_name == "Sphinx":
                         if target == "sphinx":
-                            print(" Your spell bounces off her thick skin, with no effect. Actually, there is one small side effect. She pounces on you.", end = "")
-                            finished = Endings("Killed by Sphinx")
-                elif Encounter == False or pass_through == True:
+                            general_attack = True
+
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            general_attack == True
+
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(7)
                     elif target == "hedge":
@@ -495,7 +562,18 @@ while finished == False:
                         if target == "sphinx":
                             print(" Your Patronus charges straight through her with no effect. Actually, there is one small side effect. She pounces on you.", end = "")
                             finished = Endings("Killed by Sphinx")
-                elif Encounter == False or pass_through == True:
+
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            print(" A spider is not a Dementor, so this spell is useless.")
+                            if Spider_counter != 5:
+                                general_attack == True
+
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(8)
                     elif target == "hedge":
@@ -514,19 +592,83 @@ while finished == False:
                                 print(" You point your wand at Krum just as he looks up. Krum turns and runs.", end = "")
                             print(' You yell, “Riddikulus!” The spell hits Krum in the back. As he is not a Boggart, however, he merely keeps running, vanishing into the maze.')
                             Krum_status = 'fled'
+
                     if encounter_name == "Sphinx":
                         if target == "sphinx":
-                            print(" Your spell bounces off her thick skin, with no effect. Actually, there is one small side effect. She pounces on you.", end = "")
-                            finished = Endings("Killed by Sphinx")
-                elif Encounter == False or pass_through == True:
+                            general_attack = True
+
+                    elif encounter_name == 'Spider':
+                        if target == "cedric":
+                            if Spider_counter == 2:
+                                general_attack = True
+                                pass_through = False
+                        elif target == "spider":
+                            print (" A spider is not a Boggart, so this spell is useless.")
+                            if Spider_counter !=5:
+                                general_attack == True
+
+                if (Encounter == False or pass_through == True) and general_attack == False:
                     if target == "cedric":
                         Harry.attacking_Cedric(6)
                     elif target == "hedge":
                         print(" You may consider this maze your worst fear. However, it is not a Boggart and cannot be dispelled by Riddikulus.")
+
+            if general_attack == True:
+                if encounter_name == "Sphinx":
+                    print("Your spell bounces off her thick skin, with no effect. After all, sphinxes don't carry wands. Actually, there is one small side effect. She pounces on you.", end = "")
+                    finished = (Endings("Killed by Sphinx"))
+                elif encounter_name == "Spider":
+                    if target == "cedric":
+                        if Spider_counter == 2:
+                            if Harry.Cedric_relations < -1:
+                                print('Cedric dodges your spell and fires one back at you, parting your hair. Then, not looking where he is going, he runs straight into the oncoming spider.')
+                                finished = Endings('Take the Cup Alone, you Jerk')
+                            else:
+                                print('Cedric dodges your spell and turns around. “What –” he begins before the spider crashes straight into him.')
+                                finished = Endings('Take the Cup Alone, you Jerk')
+                        elif Cedric_status == 'warned':
+                            print(" You Slytherin, hitting a man while he's down. If your goal is to win the tournament, though, you succeeded.")
+                            finished = Endings('Take the Cup Alone, you Jerk')
+                    elif target == "spider":
+                        if Spider_counter == 2:
+                            print(' The monster is out of range behind the hedge, so your spell flies wide, but your action alerts Cedric to the danger.')
+                            Cedric_status = 'warned'
+                            Spider_counter = 3
+                        elif Spider_counter == 3:
+                            Harry.Cedric_relations +=1
+                            print(" Your spell hits the spider's gigantic, hairy black body, but for all the good it does, you might as well have thrown a stone at it; the spider jerks, scuttles around, and runs at you instead. \n You continue casting spells at it, but it’s no use - the spider is either so large, or so magical, that the spells are doing no more than aggravating it. You have one horrifying glimpse of eight shining black eyes and razor-sharp pincers before it is upon you. \n You are lifted into the air in its front legs; struggling madly, you try to kick it; your leg connects with the pincers and next moment you are in excruciating pain.")
+                            Harry.health -=2
+                            if Cedric_relations < 1:
+                                finished = Endings('Take the Cup, Cedric, you Jerk')
+                            else:
+                                print(' You can hear Cedric yelling “Stupefy!” but his spell has no more effect than yours.')
+                                Spider_counter = 4
+                        elif Spider_counter == 4:
+                            print(' Your spell has no effect')
+                        elif Spider_counter == 5:
+                            print(" Desperately, you aim high at the spider's underbelly and cast your spell",end = "")
+                            if Harry.Cedric_relations <1:
+                                print(". But, without Cedric's help, your magic is of no avail.")
+                                finished = Endings('Take the Cup, Cedric, you Jerk')
+                            else:
+                                print(' just as Cedric shouts the same thing. The two spells combined do what one alone had not: The spider keels over sideways, flattening a nearby hedge, and strewing the path with a tangle of hairy legs. \n "Harry!" you hear Cedric shouting. "You all right? Did it fall on you?" \n "No," You call back, panting. "')
+                                Spider_counter = 6
+
+
+
+
     #MOVING
     if action == "go forward" or action == "forward" or action == "go right" or action == "right" or action == "go left" or action == "left" or action == "go back" or action == "back":
         action = action.replace("go ","\0")
         Harry.move(action)
+        print('')
+        if Encounter == True:
+            if encounter_name == "Spider":
+                if Spider_counter == 2:
+                    if action == "forward":
+                        print(' You sprint forward. But, in your haste, you trip and your wand flies out of your hand as a gigantic spider steps into the path and begins to bear down on you. You scramble to retrieve it and find yourself directly under the spider, gazing up at its underbelly.')
+                        Harry.status = under_Spider
+                        Spider_counter = 3
         rescuer = 0
 
     if action == "speak":
@@ -574,6 +716,32 @@ while finished == False:
                                     finished = Endings("Killed by Sphinx")
                             else:
                                 print(' “Never mind,” you say. The sphinx stares at you, smiling her mysterious smile.')
+            elif encounter_name == "Spider":
+                wordChoice = 0
+                while wordChoice == 0:
+                    if Spider_counter == 2: #Spider seen, interacting w/ Cedric
+                        wordChoice = input(' 1. Warn Cedric\n 2. Distract Cedric.\n ')
+                        wordChoice = wordChoice.lower()
+                        if wordChoice == "1" or wordChoice == "warn cedric":
+                            print('“Cedric!” you yell. “On your left!”')
+                            if Harry.Cedric_relations < -1:
+                                print(' Cedric, not trusting you, hurries on. He runs straight into the spider.')
+                                finished = Endings('Take the Cup Alone, you Jerk')
+                            else:
+                                Harry.Cedric_relations +=1
+                                Cedric_status = 'warned'
+                                Spider_counter = 3
+                        else:
+                            print('“Cedric!” you yell. “Look at me!”')
+                            if Harry.Cedric_relations < -1:
+                                print(' Cedric, not trusting you, hurries on. He runs straight into the spider.')
+                                finished = Endings('Take the Cup Alone, you Jerk')
+                            else:
+                                print(' At your shout, Cedric turns around. “What –” he begins before the spider crashes straight into him.')
+                                finished = Endings('Take the Cup Alone, you Jerk')
+                    else:
+                        wordChoice = 1
+
 
 
     #QUITTING
@@ -630,3 +798,42 @@ while finished == False:
                    elif Krum_status == 'fled':
                        print('You stand victorious over the field, Krum fled and Cedric at your feet.')
                    Encounter = False
+        if encounter_name == "Spider":
+            if finished == False:
+                if Spider_counter == 1 and Harry.y == -7:
+                    print(' This is no time to delay! The cup’s right there!')
+                    Harry.move("forward")
+                elif Spider_counter == 2:
+                    print(' Not seeing the spider, Cedric runs straight into it.')
+                    finished = Endings('Take the Cup Alone, you Jerk')
+                elif Spider_counter == 5:
+                    print(' Your action was of no avail.')
+                    finished = Endings("Killed by Spider")
+                elif Spider_counter == 6:
+                    if Harry.health <2:
+                        print(' Your leg is bleeding freely. You try to get up, but your leg is shaking badly and does not want to support your weight. You lean against the hedge, gasping for breath, and look around.')
+                    print(' Cedric is standing feet from the Triwizard Cup, which gleams behind him. \n "Take it, then," you pant to Cedric. "Go on, take it. You\'re there." ')
+                    if Harry.Cedric_relations <1:
+                        finished = Endings('Take the Cup, Cedric, Please')
+                    elif Harry.Cedric_relations <2:
+                        print(' But Cedric doesn’t move. He merely stands there, looking at you. Then he turns to stare at the cup. You can see the longing expression on his face.')
+                        finished = Endings('Take the Cup, Cedric, Please')
+                    else:
+                        print(' He looks around at you again and takes a deep breath.  \n "You take it. You should win. That''s twice you\'ve saved my neck in here." \n "That\'s not how it\'s supposed to work," you say. “The one who reaches the cup first gets the points. That\'s you.' , end = '')
+                        if Harry.health <2:
+                            print(' I\'m telling you, I\'m not going to win any races on this leg."')
+                        else: print(' You’re right there."')
+                        print('	Cedric takes a few paces nearer to the Stunned spider, away from the cup, shaking his head. \n "No," he says. \n “Stop being noble," you say, irritably. "Just take it, then we can get out of here." \n "You told me about the dragons," Cedric says. "I would\'ve gone down in the first task if you hadn\'t told me what was coming." \n "I had help on that too," you snap. "You helped me with the egg - we\'re square." \n "I had help on the egg in the first place," says Cedric. \n "We\'re still square," you say', end = "")
+                        if Harry.health < 2:
+                            print(', testing your leg gingerly; it shakes violently as you put weight on it; apparently your ankle is sprained.')
+                        else: print('.')
+                        print(' "You should\'ve got more points on the second task," says Cedric mulishly. "You stayed behind to get all the hostages. I should\'ve done that." \n "I was the only one who was thick enough to take that song seriously! Just take the cup!" \n "No," says Cedric. He steps over the spider\'s tangled legs to join you. \n "Go on," he says. He looks as though this costs him every ounce of resolution he has, but his face is set, his arms are folded, he seems decided.')
+                        wordChoice = input(' 1. Take the Cup Alone\n 2. Distract Cedric.\n ')
+                        wordChoice = wordChoice.lower()
+                        if wordChoice == "1" or wordChoice == "take the cup alone" or wordChoice == 'alone':
+                            finished = Endings('Take the Cup Alone, at Cedric’s Prompting')
+                        elif wordChoice == "2" or wordChoice == "give the cup to cedric" or wordChoice == "cedric":
+                            print(' “Cedric, I’m sick of the limelight,” you say. “I don’t deserve to be here, didn’t want to be here, and definitely don’t need my face plastered all over the Daily Prophet again. Hufflepuff House hasn’t had this kind of glory in centuries. Go ahead. Take the cup. You deserve it.”\n After wrestling with himself, Cedric reluctantly nods. “If you’re certain.” \n “I’m certain, Cedric. Go ahead.” ')
+                            finished = Endings('Take the Cup, Cedric, Please')
+                        else:
+                            finished = Endings('Take the Cup Together')
