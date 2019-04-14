@@ -1,4 +1,4 @@
-#Time taken: 1163
+#Time taken: 1233
 # Compass directions: 1-N, 2-E, 3-S, 4-W
 import random
 
@@ -6,7 +6,7 @@ direction = 4
 # HarryX = 12
 # HarryY = 0
 
-local_objects = ['Hedge']
+local_objects = ['hedge']
 
 rescuer = 0
 Encounter = False
@@ -110,9 +110,9 @@ def explain_path_check(positionX,positionY,direction_facing):
 class character():
     def __init__(self, name):
         self.name = name
-        self.x = 12
-        self.y = 0
-        self.compass = 1
+        self.x = 9
+        self.y = -9
+        self.compass = 4
         self.Cedric_relations = 0
         self.health = 3
         self.status = "normal"
@@ -146,7 +146,8 @@ class character():
 
     def activate_Encounter(self):
         if self.x == 1 and self. y == -10:
-            return "Sphinx"
+            if encounter_name != "Sphinx":
+                return "Sphinx"
         # elif (self.x == 2 and self.y == -12) or (self.x == 4 and self.y == -3) or(self.x == 9 and self.y == -1):
         #     return "Skrewt"
         # elif self.x == 2 and self.y == -4:
@@ -252,7 +253,7 @@ def Endings(title):
                 Epilogue = "The Noseless One"
         else:
             if title == "Killed by Sphinx":
-                print("\tYou are quickly torn to shreds by her fierce claws. Sphinxes have little tolerance for stupidity.")
+                print(" You are quickly torn to shreds by her fierce claws. Sphinxes have little tolerance for stupidity.")
             print("\tOvercome by your wounds, you die. Cedric comes upon your body and casts red sparks.")
 
             if Harry.Cedric_relations>0:
@@ -269,7 +270,7 @@ def Endings(title):
                     Epilogue = "The Noseless One"
                 else:
                     Epilogue = "The Chosen One"
-                    print(" His body is found several days later in a graveyard in Little Hangleton, with a gash in the crook of his elbow.")
+                    print(" Several days later, his body is found in a graveyard in Little Hangleton, with a gash in the crook of his elbow.")
 
     elif title.startswith("Take the Cup"):
         if title.startswith("Take the Cup Alone"):
@@ -314,10 +315,13 @@ def Endings(title):
 
 while finished == False:
     #check paths and give location update
-    print(explain_path_check(Harry.x, Harry.y, Harry.compass))
+    if Encounter == False or ((Harry.x != 8 or Harry.y != -8) and (Harry.x != 1 or Harry.y != -10) and (Harry.x != 0 or Harry.y <-7)):
+        print(Harry.x)
+        print(Harry.y)
+        print(explain_path_check(Harry.x, Harry.y, Harry.compass))
     # check whether an encounter ought to be activated
     if Encounter == False:
-        encounter_name == Harry.activate_Encounter()
+        encounter_name = Harry.activate_Encounter()
         if encounter_name != "None":
             Encounter = True
     #If Encounter is activated, run Encounter description
@@ -325,43 +329,48 @@ while finished == False:
         if encounter_name == "Cedric and Krum":
             if CK_counter == -2:
                 if Harry.compass == 4:
-                    true_north = "to your right."
+                    true_north = "to your right"
                 elif Harry.compass == 2:
-                    true_north = "to your left."
+                    true_north = "to your left"
                 print(' The hedge ' + true_north + ' is thinner in this spot. You hear something in the path on the opposite side. Cedric’s voice is yelling, “What are you doing? What the hell d\'you think you\'re doing?" \n Then you hear Krum’s voice. "Crucio!" \n The air is suddenly full of Cedric\'s yells.')
                 CK_counter = -1
             elif CK_counter == -1:
-                print(" You continue to hear Cedric's yells, growing fainter.")
-                CK_ignored_counter +=1
-                if CK_ignored_counter == 20:
-                    encounter_name = "None"
-                    Encounter = False
-            elif CK_counter == 0:
+                if Harry.x == 8 and Harry.y == -8:
+                    CK_counter = 0
+                else:
+                    print(" You continue to hear Cedric's yells, growing fainter.")
+                    CK_ignored_counter +=1
+                    if CK_ignored_counter == 14:
+                        encounter_name = "None"
+                        Encounter = False
+            if CK_counter == 0:
                 print("You see Cedric jerking and twitching on the ground, Krum standing over him.")
-                local_objects = ['Cedric'] + ['Krum'] + local_objects
+                local_objects = ['cedric'] + ['krum'] + local_objects
                 CK_counter +=1
 
         elif encounter_name == "Sphinx":
             if Sph_counter == 0:
                 print(' Ahead of you is a sphinx. It has the body of an over-large lion: great clawed paws and a long yellowish tail ending in a brown tuft, but it has the head of a woman. She turns her long, almond-shaped eyes upon you. However, she does not seem about to attack, but instead paces from side to side of the path, blocking your progress. Then she speaks in a deep, hoarse voice.\n "You are very near your goal. The quickest way is past me."')
                 if 'Sphinx' not in local_objects:
-                    local_objects = ['Sphinx'] + local_objects
+                    local_objects = ['sphinx'] + local_objects
+            elif Harry.x == 1 and Harry.y == -10:
+                print(' The sphinx remains in the middle of the path, blocking your way forward.')
 
         elif encounter_name == "Spider":
             if Spider_counter == 0:
                 print(' The Triwizard Cup is gleaming on a plinth a hundred yards away. Suddenly a dark figure hurtles out onto the path in front of you. It is Cedric, running for the cup.')
-                local_objects = ['Cedric'] + local_objects
+                local_objects = ['cedric'] + local_objects
                 Spider_counter +=1
             elif Spider_counter ==1 and Harry.y == -6:
                 print(' You charge forward, but Cedric is going to get there first. Cedric is sprinting as fast as he can toward the cup, and you have no chance of catching up; Cedric is much taller, with much longer legs.\n Then you see something immense over a hedge to your left, moving quickly along a path that intersects with your own; it is moving so fast Cedric is about to run into it, and Cedric, his eyes on the cup, has not seen it –')
-                local_objects = ['Spider'] + local_objects
+                local_objects = ['spider'] + local_objects
                 Spider_counter +=1
             elif Spider_counter == 3:
                 print(" Cedric looks around just in time to hurl himself past the thing and avoid colliding with it, but in his haste he trips. Cedric’s wand flies out of his hand as a gigantic spider steps into the path and begins to bear down on him.")
             if Harry.status == "under_Spider":
                 Spider_counter = 5
 
-    else: local_objects = ['Hedge']
+    else: local_objects = ['hedge']
 
 
     # CHOOSING AN ACTION
@@ -371,7 +380,7 @@ while finished == False:
         action = action.lower()
         if action == "menu" or action == "options": #Options menu
             print(" forward \n right \n left \n back \n look \n wait \n cast spell \n speak \n")
-            questions = input(" If you would like further explanation of your options, type 'Hermione'. Otherwise, type 'back' to return to the game. ")
+            questions = input(" If you would like further explanation of your options, type 'Hermione'. Otherwise, type 'back' to return to the game.\n ")
             if questions == "'Hermione'" or questions == "Hermione" or questions == "hermione":
                 print(" forward: moves you forward one space. \n right: turns you to the right. \n left: turns you to the left. \n back: turns you to face the opposite direction. \n look: gives you a choice of things to look at. \n wait: do nothing for a turn. \n cast spell: gives you a choice of spells to cast \n speak: gives you a choice of things to say.")
             else:
@@ -403,17 +412,25 @@ while finished == False:
         else: #combat spells
             print("What is your target?")
             for i in range(len(local_objects)):
-                print(str(i+1)+ ". " + local_objects[i])
+                print(" " + str(i+1)+ ". " + local_objects[i])
             target = input()
             if target.isdigit() == True:
-                target = local_objects[int(target)-1]
-            target = target.lower()
+                try:
+                    target = local_objects[int(target)-1]
+                except:
+                    target = ''
+                    print("You do not seem able to count.")
+            else:
+                target = target.lower()
+                if target not in local_objects:
+                    print("You can't cast a spell on that right now.")
+                    target = ''
 
             if spell == "4" or spell == "expelliarmus":
                 if Encounter == True:
                     if encounter_name == "Cedric and Krum":
                         if Krum_status == "active":
-                            if target == "cedric" or local_objects[(int(target)-1)]:
+                            if target == "cedric":
                                 print("As Cedric’s wand has already fallen from his twitching fingers, this spell has no effect.")
                                 Harry.Cedric_relations -=1
                                 Cedric_status = "attacked"
@@ -456,7 +473,8 @@ while finished == False:
                                 print(' Your spell knocks Cedric out, saving him from further pain. Krum continues to cast Crucio for a moment before realizing that his victim is no longer screaming. He turns and runs.')
                                 Harry.Cedric_relations -=1
                                 Cedric_status = 'unconscious'
-                            elif target == Krum:
+                                pass_through = False
+                            elif target == 'krum':
                                 print(' You point your wand at Krum just as he looks up. Krum turns and runs. You yell, “Stupefy!” The spell hits Krum in the back. He stops in his tracks, falls forward, and lies motionless facedown.')
                                 Krum_status = 'vanquished'
 
@@ -515,7 +533,8 @@ while finished == False:
                         if Harry.x == 8 and Harry.y == -9:
                             if target == "hedge":
                                 print(" It isn’t very effective, but you manage to burn a small hole into the hedge, then force your way through.")
-                                CK_counter == 0
+                                CK_counter = 0
+                                Harry.y = -8
                                 pass_through = False
                         if target == "cedric":
                             print(' You point your wand at Cedric and yell, “Reducto!” The spell blasts Cedric away from Krum. He lands several yards away and lies motionless, smoking slightly. Realizing that his victim has been successfully incapacitated, Krum turns and runs.')
@@ -741,6 +760,9 @@ while finished == False:
                                 finished = Endings('Take the Cup Alone, you Jerk')
                     else:
                         wordChoice = 1
+            else print(" You can't think of anything to say right now.")
+        else:
+            print(' "I\'m Harry Potter, Harry Harry Potter!"')
 
 
 
@@ -765,18 +787,18 @@ while finished == False:
                         newAction = 0
                         while newAction == 0:
                             newAction = input('1. Yes\n 2. Unsure\n')
-                            if newAction == 1 or newAction == "Yes" or newAction =="yes":
+                            if newAction == "1" or newAction == "Yes" or newAction =="yes":
                                 print('"Definitely"')
-                            elif newAction == 2 or newAction == "Unsure" or newAction =="unsure":
+                            elif newAction == "2" or newAction == "Unsure" or newAction =="unsure":
                                 print('"I don\'t know"')
                     if Krum_status == 'vanquished':
                          print('"Should we leave him here?" Cedric mutters.')
                          newAction = 0
                          while newAction == 0:
                              newAction = input('1. Yes\n 2. No\n')
-                             if newAction == 1 or newAction == "Yes" or newAction =="yes":
+                             if newAction == "1" or newAction == "Yes" or newAction =="yes":
                                  print('“Yeah,” you say. “When the tournament’s over someone will come get him. And if a skrewt eats him in the meantime … he deserves it.”')
-                             elif newAction == 2 or newAction == "No" or newAction =="no":
+                             elif newAction == "2" or newAction == "No" or newAction =="no":
                                  print('“No,” you say. “I reckon we should send up red sparks. Someone\'ll come and collect him . . . otherwise he\'ll probably be eaten by a skrewt."\n"He\d deserve it," Cedric mutters, but he raises his wand and shoots a shower of red sparks into the air, which hover high above Krum.')
                     print('You and Cedric stand together in the darkness for a moment. Then Cedric says, "Well... I s\'pose we\'d better go on. . . ."\n"What?" you say. "Oh . . . yeah . . . right. . ." \nAfter all, you and Cedric are opponents. Cedric turns and walks off. His footsteps soon die away.')
                     Encounter = False
@@ -786,9 +808,9 @@ while finished == False:
                     newAction = 0
                     while newAction == 0:
                         newAction = input('1. Apologize\n 2. Defend your actions\n')
-                        if newAction == 1 or newAction == "Apologize" or newAction =="apologize":
+                        if newAction == "1" or newAction == "Apologize" or newAction =="apologize":
                            print('“I’m sorry,” you say. “It was an accident."\n"If your aim is really that bad, it’s a wonder you’ve made it this far,” he says. “We’d better go on.”\n Cedric turns and walks off. His footsteps soon die away.')
-                        elif newAction == 2 or newAction == "Defend your actions" or newAction =="defend your actions":
+                       elif newAction == "2" or newAction == "Defend your actions" or newAction =="defend your actions":
                            print('“I couldn’t tell who was the aggressor," you say. "So I attacked both of you.”\n“Seriously?” he growls. “If your judgment is really that bad, it’s a wonder you’ve made it this far. I’m going on.” Cedric turns and walks off. His footsteps soon die away.')
                            Harry.Cedric_relations -=1
                         Encounter = False
