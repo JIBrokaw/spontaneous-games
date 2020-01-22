@@ -1,4 +1,4 @@
-# Time taken: 60
+# Time taken: 1718 + 60
 # Compass directions: 1-N, 2-E, 3-S, 4-W
 import random
 
